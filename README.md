@@ -1,0 +1,2 @@
+# GriddlersSolver
+Automatic Griddlers solver
