@@ -35,7 +35,11 @@ void FieldLine::Process()
     // Actions to do:
     // 1. Adjust group limits - according to fields set by other fieldLines
     for (auto it = iGroups.begin(); it != iGroups.end(); it++) {
+        if ((*it).IsComplete())
+            continue;
+        std::vector<int> fullFields; // full fields belonging to this group exclusively
         for (int i = (*it).LowerLimit(); i <= (*it).UpperLimit(); i++) {
+            int fieldOwners = 0;
             switch(iFields[i]->GetState()) {
             case State_Empty:
                 // TODO: currently unsupported - group size is 2:
@@ -46,12 +50,28 @@ void FieldLine::Process()
                     (*it).SetUpperLimit(i - 1);
                 break;
             case State_Full:
-                // TODO - cd
+                fieldOwners = GroupsContainingField(i);
+                if (fieldOwners > 1) // leave it be for now
+                    break;
+                fullFields.push_back(i);
                 break;
             case State_Unknown:
+                break;
             default:
                 break;
             }
+        }
+        if (fullFields.size() > 0) {
+            int minIndex = fullFields[0];
+            int maxIndex = fullFields[fullFields.size() - 1];
+            for (int j = minIndex; j < maxIndex; j++) // fill the gaps with full fields
+                iFields[j]->SetState(State_Full);
+            // Recalculate fieldGroup limits
+            int missingFields = (*it).Size() - (maxIndex - minIndex + 1);
+            if (minIndex - missingFields >= (*it).LowerLimit())
+                (*it).SetLowerLimit(minIndex - missingFields);
+            if (maxIndex + missingFields <= (*it).UpperLimit())
+                (*it).SetUpperLimit(maxIndex + missingFields);
         }
     }
 
@@ -69,6 +89,8 @@ void FieldLine::Process()
     //     arbitrarly change limits of these fieldGroups to contain one of field groups each
     // TODO: Add processing here
     for (auto it = iGroups.begin(); it != iGroups.end(); it++) {
+        if ((*it).IsComplete())
+            continue;
         // 1. (initial) mark obvious fields
         if ((*it).Range() < 2 * (*it).Size()) {
             for (int i = ((*it).UpperLimit() - (*it).Size() + 1); i < ((*it).LowerLimit() + (*it).Size()); i++) {

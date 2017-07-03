@@ -13,6 +13,7 @@ int main(int argc, char *argv[])
         return -1;
     }
     board.DBG_ProcessOnce();
+    board.DBG_ProcessOnce();
 
     return a.exec();
 }

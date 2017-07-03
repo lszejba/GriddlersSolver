@@ -3,7 +3,7 @@
 
 FieldGroup::FieldGroup(int size) : iSize(size)
 {
-std::cout << "FieldGroup Constructor(" << size << ")\n";
+//std::cout << "FieldGroup Constructor(" << size << ")\n";
     iLowerLimit = -1;
     iUpperLimit = -1;
 }
@@ -17,11 +17,11 @@ int FieldGroup::Range()
 
 void FieldGroup::SetLowerLimit(int limit)
 {
-    std::cout << "SetLowerLimit(" << limit << ") -> " << iLowerLimit << " - " << iUpperLimit << std::endl;
+//    std::cout << "SetLowerLimit(" << limit << ") -> " << iLowerLimit << " - " << iUpperLimit << std::endl;
     if (iLowerLimit < 0) {
         iLowerLimit = limit;
-        std::cout << "Lower limit set: " << iLowerLimit << std::endl;
-        std::cout << "-> SetLowerLimit(" << limit << ") -> " << iLowerLimit << " - " << iUpperLimit << std::endl;
+//        std::cout << "Lower limit set: " << iLowerLimit << std::endl;
+//        std::cout << "-> SetLowerLimit(" << limit << ") -> " << iLowerLimit << " - " << iUpperLimit << std::endl;
         return;
     }
 
@@ -39,11 +39,11 @@ void FieldGroup::SetLowerLimit(int limit)
 
 void FieldGroup::SetUpperLimit(int limit)
 {
-    std::cout << "SetUpperLimit(" << limit << ") -> " << iLowerLimit << " - " << iUpperLimit << std::endl;
+//    std::cout << "SetUpperLimit(" << limit << ") -> " << iLowerLimit << " - " << iUpperLimit << std::endl;
     if (iUpperLimit < 0) {
         iUpperLimit = limit;
-        std::cout << "Upper limit set: " << iUpperLimit << std::endl;
-        std::cout << "-> SetUpperLimit(" << limit << ") -> " << iLowerLimit << " - " << iUpperLimit << std::endl;
+//        std::cout << "Upper limit set: " << iUpperLimit << std::endl;
+//        std::cout << "-> SetUpperLimit(" << limit << ") -> " << iLowerLimit << " - " << iUpperLimit << std::endl;
         return;
     }
 

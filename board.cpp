@@ -89,6 +89,7 @@ void Board::DBG_ProcessOnce()
         iRows[i].Process();
         iRows[i].Print();
     }
+    std::cout << "\n\n";
 }
 
 void Board::CreateFieldGroups(std::vector<std::string> &elems, std::vector<FieldLine> &line, unsigned lineSize)
