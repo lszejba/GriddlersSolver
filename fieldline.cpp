@@ -82,6 +82,25 @@ void FieldLine::Process()
             iFields[i]->SetState(State_Empty);
     }
     // 3. Check existing groups of full fields:
+    std::vector<int> fullFieldGroupIndex;
+    std::vector<int> fullFieldGroupSize;
+    int currentGroupIndex = -1, currentGroupSize = 0;
+    for (int i = 0; i < iSize; i++) {
+        if (iFields[i]->GetState() == State_Full) {
+            if (currentGroupIndex < 0)
+                currentGroupIndex = i;
+            currentGroupSize++;
+        }
+        else {
+            if (currentGroupSize > 0) {
+                fullFieldGroupIndex.push_back(currentGroupIndex);
+                fullFieldGroupSize.push_back(currentGroupSize);
+                currentGroupIndex = -1;
+                currentGroupSize = 0;
+            }
+        }
+    }
+    // TODO - continue
     // 3a. If any of them has max size for fieldLine (according to non-complete fieldGroups)
     //     limit them with empty fields on one or both sides
     // 3b. If 2 (or more) non-complete fieldGroups overlap, and overlapping area contains
@@ -89,8 +108,8 @@ void FieldLine::Process()
     //     arbitrarly change limits of these fieldGroups to contain one of field groups each
     // TODO: Add processing here
     for (auto it = iGroups.begin(); it != iGroups.end(); it++) {
-        if ((*it).IsComplete())
-            continue;
+//        if ((*it).IsComplete())
+//            continue;
         // 1. (initial) mark obvious fields
         if ((*it).Range() < 2 * (*it).Size()) {
             for (int i = ((*it).UpperLimit() - (*it).Size() + 1); i < ((*it).LowerLimit() + (*it).Size()); i++) {

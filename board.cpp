@@ -85,10 +85,11 @@ void Board::DBG_ProcessOnce()
 {
     for (int i = 0; i < iWidth; i++)
         iColumns[i].Process();
-    for (int i = 0; i < iHeight; i++) {
+    for (int i = 0; i < iHeight; i++)
         iRows[i].Process();
+
+    for (int i = 0; i < iHeight; i++)
         iRows[i].Print();
-    }
     std::cout << "\n\n";
 }
 
