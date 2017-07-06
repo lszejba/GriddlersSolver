@@ -32,9 +32,12 @@ void FieldLine::Process()
         return;
     isChanged = false;
 
+    int longestGroupSize = 0;
     // Actions to do:
     // 1. Adjust group limits - according to fields set by other fieldLines
     for (auto it = iGroups.begin(); it != iGroups.end(); it++) {
+        if ((*it).Size() > longestGroupSize)
+            longestGroupSize = (*it).Size();
         if ((*it).IsComplete())
             continue;
         std::vector<int> fullFields; // full fields belonging to this group exclusively
@@ -100,7 +103,15 @@ void FieldLine::Process()
             }
         }
     }
-    // TODO - continue
+    // 3.1. Limit groups of full fields of length equal to those of longest fieldGroup
+    for (int i = 0; i < fullFieldGroupSize.size(); i++) {
+        if (fullFieldGroupSize[i] == longestGroupSize) {
+            if (fullFieldGroupIndex[i] - 1 > 0)
+                iFields[fullFieldGroupIndex[i] - 1]->SetState(State_Empty);
+            if (fullFieldGroupIndex[i] + fullFieldGroupSize[i] < iSize)
+                iFields[fullFieldGroupIndex[i] + fullFieldGroupSize[i] ]->SetState(State_Empty);
+        }
+    }
     // 3a. If any of them has max size for fieldLine (according to non-complete fieldGroups)
     //     limit them with empty fields on one or both sides
     // 3b. If 2 (or more) non-complete fieldGroups overlap, and overlapping area contains
