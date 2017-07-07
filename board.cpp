@@ -6,9 +6,9 @@
 Board::Board(unsigned width, unsigned height) : iWidth(width), iHeight(height)
 {
     for (unsigned i = 0; i < height; i++)
-        iRows.push_back(FieldLine(width));
+        iRows.push_back(FieldLine(width, "Row", i));
     for (unsigned j = 0; j < width; j++)
-        iColumns.push_back(FieldLine(height));
+        iColumns.push_back(FieldLine(height, "Col", j));
     iAllFields = new Field *[width * height];
     for (unsigned i = 0; i < height; i++) {
         for (unsigned j = 0; j < width; j++) {
@@ -72,21 +72,25 @@ void Board::PrintSelf()
     std::cout << "Board\n";
     std::cout << "Rows:\n";
     for (unsigned i = 0; i < iRows.size(); i++) {
-        iRows[i].PrintSelf(i);
+        iRows[i].PrintSelf();
     }
     std::cout << "Columns:\n";
     for (unsigned i = 0; i < iColumns.size(); i++) {
-        iColumns[i].PrintSelf(i);
+        iColumns[i].PrintSelf();
     }
     std::cout << "Board done\n";
 }
 
 void Board::DBG_ProcessOnce()
 {
+    std::cout << "---\n\n";
+
     for (int i = 0; i < iWidth; i++)
         iColumns[i].Process();
     for (int i = 0; i < iHeight; i++)
         iRows[i].Process();
+
+    PrintSelf();
 
     for (int i = 0; i < iHeight; i++)
         iRows[i].Print();

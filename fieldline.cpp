@@ -1,7 +1,7 @@
 #include "fieldline.h"
 #include <iostream>
 
-FieldLine::FieldLine(int size) : iSize(size), isChanged(true)
+FieldLine::FieldLine(int size, std::string type, int index) : iSize(size), iType(type), iIndex(index),  isChanged(true)
 {
     iFields = std::vector<Field *>(size);
     for (int i = 0; i < size; i++)
@@ -28,8 +28,8 @@ bool FieldLine::AddField(Field *field, int index)
 
 void FieldLine::Process()
 {
-    if (!isChanged)
-        return;
+//    if (!isChanged)
+//        return;
     isChanged = false;
 
     int longestGroupSize = 0;
@@ -130,8 +130,8 @@ void FieldLine::Process()
     }
 }
 
-void FieldLine::PrintSelf(int index) {
-    std::cout << "[" << index << "] ";
+void FieldLine::PrintSelf() {
+    std::cout << "[" << iType << " " << iIndex << "] ";
     for (unsigned i = 0; i < iGroups.size(); i++) {
         iGroups[i].PrintSelf();
         std::cout << " ";
