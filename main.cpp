@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
     board.DBG_ProcessOnce();
     board.DBG_ProcessOnce();
     board.DBG_ProcessOnce();
+    board.DBG_ProcessOnce();
 
     return a.exec();
 }

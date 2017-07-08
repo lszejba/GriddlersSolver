@@ -36,13 +36,11 @@ void FieldLine::Process()
     // Actions to do:
     // 1. Adjust group limits - according to fields set by other fieldLines
     for (auto it = iGroups.begin(); it != iGroups.end(); it++) {
-        if ((*it).Size() > longestGroupSize)
-            longestGroupSize = (*it).Size();
         if ((*it).IsComplete())
             continue;
         std::vector<int> fullFields; // full fields belonging to this group exclusively
         for (int i = (*it).LowerLimit(); i <= (*it).UpperLimit(); i++) {
-            int fieldOwners = 0;
+            std::vector<int> fieldOwners;
             switch(iFields[i]->GetState()) {
             case State_Empty:
                 // TODO: currently unsupported - group size is 2:
@@ -54,7 +52,7 @@ void FieldLine::Process()
                 break;
             case State_Full:
                 fieldOwners = GroupsContainingField(i);
-                if (fieldOwners > 1) // leave it be for now
+                if (fieldOwners.size() > 1) // leave it be for now
                     break;
                 fullFields.push_back(i);
                 break;
@@ -76,12 +74,22 @@ void FieldLine::Process()
             if (maxIndex + missingFields <= (*it).UpperLimit())
                 (*it).SetUpperLimit(maxIndex + missingFields);
         }
+        // mark obvious fields
+        if ((*it).Range() < 2 * (*it).Size()) {
+            for (int i = ((*it).UpperLimit() - (*it).Size() + 1); i < ((*it).LowerLimit() + (*it).Size()); i++) {
+                iFields[i]->SetState(State_Full);
+            }
+        }
+    }
+    for (auto it = iGroups.begin(); it != iGroups.end(); it++) {
+        if ((*it).Size() > longestGroupSize)
+            longestGroupSize = (*it).Size();
     }
 
     // 2. Fill gaps between groups with empty fields - fieldLine level
     for (int i = 0; i < iSize; i++) {
-        int fieldOwners = GroupsContainingField(i);
-        if (fieldOwners == 0)
+        std::vector<int> fieldOwners = GroupsContainingField(i);
+        if (fieldOwners.size() == 0)
             iFields[i]->SetState(State_Empty);
     }
     // 3. Check existing groups of full fields:
@@ -111,23 +119,58 @@ void FieldLine::Process()
             if (fullFieldGroupIndex[i] + fullFieldGroupSize[i] < iSize)
                 iFields[fullFieldGroupIndex[i] + fullFieldGroupSize[i] ]->SetState(State_Empty);
         }
-    }
-    // 3a. If any of them has max size for fieldLine (according to non-complete fieldGroups)
-    //     limit them with empty fields on one or both sides
-    // 3b. If 2 (or more) non-complete fieldGroups overlap, and overlapping area contains
-    //     groups of full fields of the same size (which is also the size of fieldGroups)
-    //     arbitrarly change limits of these fieldGroups to contain one of field groups each
-    // TODO: Add processing here
-    for (auto it = iGroups.begin(); it != iGroups.end(); it++) {
-//        if ((*it).IsComplete())
-//            continue;
-        // 1. (initial) mark obvious fields
-        if ((*it).Range() < 2 * (*it).Size()) {
-            for (int i = ((*it).UpperLimit() - (*it).Size() + 1); i < ((*it).LowerLimit() + (*it).Size()); i++) {
-                iFields[i]->SetState(State_Full);
+        // Check if fieldGroup limits shouldn't be changed due to field of groups being too long
+        // or
+        // Change limits if fieldGroup contains only part of group of full fields
+        std::vector<int> firstFieldOwners = GroupsContainingField(fullFieldGroupIndex[i]);
+        std::vector<int> lastFieldOwners = GroupsContainingField(fullFieldGroupIndex[i] + fullFieldGroupSize[i] - 1);
+        if (firstFieldOwners.size() != lastFieldOwners.size()) { // remove fieldGroups absent from any of above groups
+            // We assume that these groups won't differ very much (bigger group contains all of elements of smaller)
+            // Check only limiting elements and change their limits if needed
+            if (firstFieldOwners.size() > lastFieldOwners.size()) {
+                if (firstFieldOwners[0] != lastFieldOwners[0]) { // first one is odd one
+                    int newLimit = fullFieldGroupIndex[i] - 2;
+                    if (newLimit > 0)
+                        iGroups[firstFieldOwners[0]].SetUpperLimit(newLimit);
+                }
+                if (firstFieldOwners[firstFieldOwners.size() - 1] != lastFieldOwners[lastFieldOwners.size() - 1]) { // last one is odd one
+                    int newLimit = fullFieldGroupIndex[i] + fullFieldGroupSize[i] - 1 + 2;
+                    if (newLimit < iSize)
+                        iGroups[firstFieldOwners[firstFieldOwners.size() - 1]].SetLowerLimit(newLimit);
+                }
+            } else {
+                if (lastFieldOwners[0] != firstFieldOwners[0]) { // first one is odd one
+                    int newLimit = fullFieldGroupIndex[i] - 2;
+                    if (newLimit > 0)
+                        iGroups[lastFieldOwners[0]].SetUpperLimit(newLimit);
+                }
+                if (lastFieldOwners[lastFieldOwners.size() - 1] != firstFieldOwners[firstFieldOwners.size() - 1]) { // last one is odd one
+                    int newLimit = fullFieldGroupIndex[i] + fullFieldGroupSize[i] - 1 + 2;
+                    if (newLimit < iSize)
+                        iGroups[lastFieldOwners[firstFieldOwners.size() - 1]].SetLowerLimit(newLimit);
+                }
+            }
+            isChanged = true;
+        } else {
+            // we only check first and last fieldGroup, as choosing which limit needs to be
+            // changed is easy then.
+            if (iGroups[firstFieldOwners[0]].Size() < fullFieldGroupSize[i]) {
+                int newLimit = fullFieldGroupIndex[i] - 2;
+                if (newLimit > 0)
+                    iGroups[firstFieldOwners[0]].SetUpperLimit(newLimit);
+                isChanged = true;
+            }
+            if (iGroups[firstFieldOwners[firstFieldOwners.size() - 1]].Size() < fullFieldGroupSize[i]) {
+                int newLimit = fullFieldGroupIndex[i] + fullFieldGroupSize[i] - 1 + 2;
+                if (newLimit < iSize)
+                    iGroups[firstFieldOwners[firstFieldOwners.size() - 1]].SetLowerLimit(newLimit);
+                isChanged = true;
             }
         }
     }
+    // 3b. If 2 (or more) non-complete fieldGroups overlap, and overlapping area contains
+    //     groups of full fields of the same size (which is also the size of fieldGroups)
+    //     arbitrarly change limits of these fieldGroups to contain one of field groups each
 }
 
 void FieldLine::PrintSelf() {
@@ -148,13 +191,13 @@ void FieldLine::Print()
     std::cout << "|\n";
 }
 
-int FieldLine::GroupsContainingField(int index)
+std::vector<int> FieldLine::GroupsContainingField(int index)
 {
-    int count = 0;
-    for (auto it = iGroups.begin(); it != iGroups.end(); it++) {
-        if ((*it).ContainsField(index))
-            count++;
+    std::vector<int> result;
+    for (int i = 0; i < iGroups.size(); i++) {
+        if (iGroups[i].ContainsField(index))
+            result.push_back(i);
     }
 
-    return count;
+    return result;
 }

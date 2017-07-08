@@ -18,7 +18,7 @@ public:
     void PrintSelf();
     void Print();
 private:
-    int GroupsContainingField(int index);
+    std::vector<int> GroupsContainingField(int index);
     std::vector<FieldGroup> iGroups;
     std::vector<Field *> iFields;
     int iSize;
