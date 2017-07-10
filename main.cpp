@@ -12,10 +12,11 @@ int main(int argc, char *argv[])
         std::cout << "Data processing failed\n";
         return -1;
     }
-    board.DBG_ProcessOnce();
-    board.DBG_ProcessOnce();
-    board.DBG_ProcessOnce();
-    board.DBG_ProcessOnce();
+    board.Process();
+//    board.DBG_ProcessOnce();
+//    board.DBG_ProcessOnce();
+//    board.DBG_ProcessOnce();
+//    board.DBG_ProcessOnce();
 
     return a.exec();
 }

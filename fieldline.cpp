@@ -26,10 +26,10 @@ bool FieldLine::AddField(Field *field, int index)
     return true;
 }
 
-void FieldLine::Process()
+bool FieldLine::Process()
 {
 //    if (!isChanged)
-//        return;
+//        return isChanged;
     isChanged = false;
 
     int longestGroupSize = 0;
@@ -171,6 +171,8 @@ void FieldLine::Process()
     // 3b. If 2 (or more) non-complete fieldGroups overlap, and overlapping area contains
     //     groups of full fields of the same size (which is also the size of fieldGroups)
     //     arbitrarly change limits of these fieldGroups to contain one of field groups each
+
+    return isChanged;
 }
 
 void FieldLine::PrintSelf() {

@@ -81,6 +81,68 @@ void Board::PrintSelf()
     std::cout << "Board done\n";
 }
 
+void Board::PrintBoard()
+{
+    int maxRowGroups = 0;
+    int maxColGroups = 0;
+    for (int i = 0; i < iWidth; i++) {
+        if (iColumns[i].NumberOfGroups() > maxColGroups)
+            maxColGroups = iColumns[i].NumberOfGroups();
+    }
+    for (int i = 0; i < iHeight; i++) {
+        if (iRows[i].NumberOfGroups() > maxRowGroups)
+            maxRowGroups = iRows[i].NumberOfGroups();
+    }
+
+    for (int i = maxColGroups; i > 0; i--) {
+        for (int j = 0; j < maxRowGroups; j++)
+            std::cout << " ";
+        std::cout << "|";
+        for (int j = 0; j < iWidth; j++) {
+            if (iColumns[j].NumberOfGroups() < i)
+                std::cout << " ";
+            else
+                std::cout << iColumns[j].GroupSize(iColumns[j].NumberOfGroups() - i);
+        }
+        std::cout << "\n";
+    }
+    for (int i = 0; i < maxRowGroups; i++)
+        std::cout << "-";
+    std::cout << "+";
+    for (int i = 0; i < iWidth; i++)
+        std::cout << "-";
+    std::cout << "+" << std::endl;
+
+    for (int i = 0; i < iHeight; i++) {
+        for (int j = maxRowGroups; j > 0; j--) {
+            if (iRows[i].NumberOfGroups() < j)
+                std::cout << " ";
+            else
+                std::cout << iRows[i].GroupSize(iRows[i].NumberOfGroups() - j);
+        }
+        iRows[i].Print();
+    }
+}
+
+void Board::Process()
+{
+//    bool anyProcessingLeft = true;
+//    while (anyProcessingLeft) {
+//        anyProcessingLeft = false;
+    for (int j = 0 ; j < 10; j++) {
+        for (int i = 0; i < iWidth; i++)
+            iColumns[i].Process();
+//            anyProcessingLeft |= iColumns[i].Process();
+        for (int i = 0; i < iHeight; i++)
+            iRows[i].Process();
+//            anyProcessingLeft |= iRows[i].Process();
+
+        PrintBoard();
+        std::cout << "\n\n";
+    }
+
+}
+
 void Board::DBG_ProcessOnce()
 {
     std::cout << "---\n\n";

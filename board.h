@@ -12,6 +12,8 @@ public:
     Board(unsigned width, unsigned height);
     bool ProcessFile(std::string content);
     void PrintSelf();
+    void PrintBoard();
+    void Process();
     void DBG_ProcessOnce();
 private:
     void CreateFieldGroups(std::vector<std::string> &elems, std::vector<FieldLine> &line, unsigned lineSize);

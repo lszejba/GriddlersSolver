@@ -12,11 +12,13 @@ public:
     FieldLine(int size, std::string type, int index);
     bool AddField(Field *field, int index);
     void ChangeOccured() { isChanged = true; }
-    void Process();
+    bool Process();
     void AddFieldGroup(FieldGroup group) { iGroups.push_back(group); }
     FieldGroup * GetFieldGroup(int index) { return &iGroups[index]; }
     void PrintSelf();
     void Print();
+    int NumberOfGroups() { return iGroups.size(); }
+    int GroupSize(int index) { (index >= 0 && index < iGroups.size()) ? iGroups[index].Size() : 0; }
 private:
     std::vector<int> GroupsContainingField(int index);
     std::vector<FieldGroup> iGroups;
