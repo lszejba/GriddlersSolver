@@ -18,14 +18,13 @@ public:
     void PrintSelf();
     void Print();
     int NumberOfGroups() { return iGroups.size(); }
-    int GroupSize(int index) { (index >= 0 && index < iGroups.size()) ? iGroups[index].Size() : 0; }
+    int GroupSize(int index) { return (index >= 0 && index < (int)(iGroups.size())) ? iGroups[index].Size() : 0; }
 private:
     std::vector<int> GroupsContainingField(int index);
     std::vector<FieldGroup> iGroups;
     std::vector<Field *> iFields;
     int iSize;
-    std::string iType;
-    int iIndex;
+    std::string iID;
     bool isChanged; // if true, fieldline will process itself
 };
 
