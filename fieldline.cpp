@@ -11,15 +11,15 @@ FieldLine::FieldLine(int size, std::string type, int index) : iSize(size), iID(t
 bool FieldLine::AddField(Field *field, int index)
 {
     if (field == nullptr) {
-        std::cout << "Field can't be null\n";
+        log("Field can't be null");
         return false;
     }
     if (index < 0 || index >= iSize) {
-        std::cout << "Invalid index\n";
+        log("Invalid index");
         return false;
     }
     if (iFields[index] != nullptr) {
-        std::cout << "Field with this index has already been set\n";
+        log("Field with this index has already been set");
         return false;
     }
     iFields[index] = field;
@@ -45,10 +45,14 @@ bool FieldLine::Process()
             case State_Empty:
                 // TODO: currently unsupported - group size is 2:
                 // group looks like this: |  X X  | - middle gap should be set to empty
-                if (i - (*it).LowerLimit() < (*it).Size()) // move lower limit
+                if (i - (*it).LowerLimit() < (*it).Size()) { // move lower limit
                     (*it).SetLowerLimit(i + 1);
-                if ((*it).UpperLimit() - i < (*it).Size()) // move upper limit
+                    log("Move lower limit", i + 1);
+                }
+                if ((*it).UpperLimit() - i < (*it).Size()) { // move upper limit
                     (*it).SetUpperLimit(i - 1);
+                    log("Move upper limit", i - 1);
+                }
                 break;
             case State_Full:
                 fieldOwners = GroupsContainingField(i);
@@ -65,19 +69,26 @@ bool FieldLine::Process()
         if (fullFields.size() > 0) {
             int minIndex = fullFields[0];
             int maxIndex = fullFields[fullFields.size() - 1];
-            for (int j = minIndex; j < maxIndex; j++) // fill the gaps with full fields
+            for (int j = minIndex; j < maxIndex; j++) { // fill the gaps with full fields
                 iFields[j]->SetState(State_Full);
+                log("Set field to FULL", j);
+            }
             // Recalculate fieldGroup limits
             int missingFields = (*it).Size() - (maxIndex - minIndex + 1);
-            if (minIndex - missingFields >= (*it).LowerLimit())
+            if (minIndex - missingFields >= (*it).LowerLimit()) {
                 (*it).SetLowerLimit(minIndex - missingFields);
-            if (maxIndex + missingFields <= (*it).UpperLimit())
+                log("Move lower limit (after fill)", minIndex - missingFields);
+            }
+            if (maxIndex + missingFields <= (*it).UpperLimit()) {
                 (*it).SetUpperLimit(maxIndex + missingFields);
+                log("Move upper limit (after fill)", maxIndex + missingFields);
+            }
         }
         // mark obvious fields
         if ((*it).Range() < 2 * (*it).Size()) {
             for (int i = ((*it).UpperLimit() - (*it).Size() + 1); i < ((*it).LowerLimit() + (*it).Size()); i++) {
                 iFields[i]->SetState(State_Full);
+                log("Set obvious field to FULL", i);
             }
         }
     }
@@ -89,8 +100,10 @@ bool FieldLine::Process()
     // 2. Fill gaps between groups with empty fields - fieldLine level
     for (int i = 0; i < iSize; i++) {
         std::vector<int> fieldOwners = GroupsContainingField(i);
-        if (fieldOwners.size() == 0)
+        if (fieldOwners.size() == 0) {
             iFields[i]->SetState(State_Empty);
+            log("Set field to EMPTY", i);
+        }
     }
     // 3. Check existing groups of full fields:
     std::vector<int> fullFieldGroupIndex;
@@ -114,10 +127,14 @@ bool FieldLine::Process()
     // 3.1. Limit groups of full fields of length equal to those of longest fieldGroup
     for (int i = 0; i < fullFieldGroupSize.size(); i++) {
         if (fullFieldGroupSize[i] == longestGroupSize) {
-            if (fullFieldGroupIndex[i] - 1 > 0)
+            if (fullFieldGroupIndex[i] - 1 > 0) {
                 iFields[fullFieldGroupIndex[i] - 1]->SetState(State_Empty);
-            if (fullFieldGroupIndex[i] + fullFieldGroupSize[i] < iSize)
+                log("Set field to EMPTY (lower limit, full group)", i);
+            }
+            if (fullFieldGroupIndex[i] + fullFieldGroupSize[i] < iSize) {
                 iFields[fullFieldGroupIndex[i] + fullFieldGroupSize[i] ]->SetState(State_Empty);
+                log("Set field to EMPTY (upper limit, full group)", i);
+            }
         }
         // Check if fieldGroup limits shouldn't be changed due to field of groups being too long
         // or
@@ -130,24 +147,32 @@ bool FieldLine::Process()
             if (firstFieldOwners.size() > lastFieldOwners.size()) {
                 if (firstFieldOwners[0] != lastFieldOwners[0]) { // first one is odd one
                     int newLimit = fullFieldGroupIndex[i] - 2;
-                    if (newLimit > 0)
+                    if (newLimit > 0) {
                         iGroups[firstFieldOwners[0]].SetUpperLimit(newLimit);
+                        log("Set upper limit (group too long)", newLimit);
+                    }
                 }
                 if (firstFieldOwners[firstFieldOwners.size() - 1] != lastFieldOwners[lastFieldOwners.size() - 1]) { // last one is odd one
                     int newLimit = fullFieldGroupIndex[i] + fullFieldGroupSize[i] - 1 + 2;
-                    if (newLimit < iSize)
+                    if (newLimit < iSize) {
                         iGroups[firstFieldOwners[firstFieldOwners.size() - 1]].SetLowerLimit(newLimit);
+                        log("Set lower limit (group too long)", newLimit);
+                    }
                 }
             } else {
                 if (lastFieldOwners[0] != firstFieldOwners[0]) { // first one is odd one
                     int newLimit = fullFieldGroupIndex[i] - 2;
-                    if (newLimit > 0)
+                    if (newLimit > 0) {
                         iGroups[lastFieldOwners[0]].SetUpperLimit(newLimit);
+                        log("Set upper limit (group too long [2]", newLimit);
+                    }
                 }
                 if (lastFieldOwners[lastFieldOwners.size() - 1] != firstFieldOwners[firstFieldOwners.size() - 1]) { // last one is odd one
                     int newLimit = fullFieldGroupIndex[i] + fullFieldGroupSize[i] - 1 + 2;
-                    if (newLimit < iSize)
+                    if (newLimit < iSize) {
                         iGroups[lastFieldOwners[firstFieldOwners.size() - 1]].SetLowerLimit(newLimit);
+                        log("Set lower limit (group too long [2]", newLimit);
+                    }
                 }
             }
             isChanged = true;
@@ -156,14 +181,18 @@ bool FieldLine::Process()
             // changed is easy then.
             if (iGroups[firstFieldOwners[0]].Size() < fullFieldGroupSize[i]) {
                 int newLimit = fullFieldGroupIndex[i] - 2;
-                if (newLimit > 0)
+                if (newLimit > 0) {
                     iGroups[firstFieldOwners[0]].SetUpperLimit(newLimit);
+                    log("Set upper limit (remove first group)", newLimit);
+                }
                 isChanged = true;
             }
             if (iGroups[firstFieldOwners[firstFieldOwners.size() - 1]].Size() < fullFieldGroupSize[i]) {
                 int newLimit = fullFieldGroupIndex[i] + fullFieldGroupSize[i] - 1 + 2;
-                if (newLimit < iSize)
+                if (newLimit < iSize) {
                     iGroups[firstFieldOwners[firstFieldOwners.size() - 1]].SetLowerLimit(newLimit);
+                    log("Set lower limit (remove last group)", newLimit);
+                }
                 isChanged = true;
             }
         }
@@ -191,6 +220,16 @@ void FieldLine::Print()
         iFields[i]->Print();
     }
     std::cout << "|\n";
+}
+
+void FieldLine::log(std::string info)
+{
+    std::cout << "[" << iID << "] " << info << std::endl;
+}
+
+void FieldLine::log(std::string info, int value)
+{
+    std::cout << "[" << iID << "] " << info << "(value: " << value << ")" << std::endl;
 }
 
 std::vector<int> FieldLine::GroupsContainingField(int index)
