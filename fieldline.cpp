@@ -28,6 +28,7 @@ bool FieldLine::AddField(Field *field, int index)
 
 bool FieldLine::Process()
 {
+    log("Inside process");
 //    if (!isChanged)
 //        return isChanged;
     isChanged = false;
@@ -66,6 +67,7 @@ bool FieldLine::Process()
                 break;
             }
         }
+        log("Full fields size: ", fullFields.size());
         if (fullFields.size() > 0) {
             int minIndex = fullFields[0];
             int maxIndex = fullFields[fullFields.size() - 1];
@@ -129,11 +131,11 @@ bool FieldLine::Process()
         if (fullFieldGroupSize[i] == longestGroupSize) {
             if (fullFieldGroupIndex[i] - 1 > 0) {
                 iFields[fullFieldGroupIndex[i] - 1]->SetState(State_Empty);
-                log("Set field to EMPTY (lower limit, full group)", i);
+                log("Set field to EMPTY (lower limit, full group)", fullFieldGroupIndex[i] - 1);
             }
             if (fullFieldGroupIndex[i] + fullFieldGroupSize[i] < iSize) {
                 iFields[fullFieldGroupIndex[i] + fullFieldGroupSize[i] ]->SetState(State_Empty);
-                log("Set field to EMPTY (upper limit, full group)", i);
+                log("Set field to EMPTY (upper limit, full group)", fullFieldGroupIndex[i] + fullFieldGroupSize[i]);
             }
         }
         // Check if fieldGroup limits shouldn't be changed due to field of groups being too long
@@ -201,6 +203,25 @@ bool FieldLine::Process()
     //     groups of full fields of the same size (which is also the size of fieldGroups)
     //     arbitrarly change limits of these fieldGroups to contain one of field groups each
 
+    // 4. Modify limits of groups neighbouring with completed groups
+    if (iGroups.size() > 1) {
+        for (int i = 0; i < iGroups.size(); i++) {
+            if (iGroups[i].IsComplete()) {
+                if (i > 0) { // check previous group
+                    if (iGroups[i - 1].UpperLimit() > (iGroups[i].LowerLimit() - 1)) {
+                        iGroups[i - 1].SetUpperLimit(iGroups[i].LowerLimit() - 1);
+                        log("Set lower limit (neighbouring complete group", iGroups[i].LowerLimit() - 1);
+                    }
+                }
+                if (i + 1 < iGroups.size()) { // check next group
+                    if (iGroups[i + 1].LowerLimit() < (iGroups[i].UpperLimit() + 1)) {
+                        iGroups[i + 1].SetLowerLimit(iGroups[i].UpperLimit() + 1);
+                        log("Set upper limit (neighbouring complete group", iGroups[i].UpperLimit() + 1);
+                    }
+                }
+            }
+        }
+    }
     return isChanged;
 }
 
@@ -224,12 +245,12 @@ void FieldLine::Print()
 
 void FieldLine::log(std::string info)
 {
-    std::cout << "[" << iID << "] " << info << std::endl;
+//    std::cout << "[" << iID << "] " << info << std::endl;
 }
 
 void FieldLine::log(std::string info, int value)
 {
-    std::cout << "[" << iID << "] " << info << "(value: " << value << ")" << std::endl;
+//    std::cout << "[" << iID << "] " << info << "(value: " << value << ")" << std::endl;
 }
 
 std::vector<int> FieldLine::GroupsContainingField(int index)

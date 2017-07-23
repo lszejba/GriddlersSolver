@@ -26,7 +26,7 @@ void FieldGroup::SetLowerLimit(int limit)
     }
 
     if (limit > iUpperLimit && iUpperLimit >= 0) {
-        std::cout << "Error: lower limit can't be greater than upper\n";
+        std::cout << "Error: lower limit can't be greater than upper (limit: " << limit << ", lower: " << iLowerLimit << ", upper: " << iUpperLimit << ")\n";
         return;
     }
     if (limit < iLowerLimit) {
@@ -48,7 +48,7 @@ void FieldGroup::SetUpperLimit(int limit)
     }
 
     if (limit < iLowerLimit && iLowerLimit >= 0) {
-        std::cout << "Error: upper limit can't be smaller than lower\n";
+        std::cout << "Error: upper limit can't be smaller than lower (limit: " << limit << ", lower: " << iLowerLimit << ", upper: " << iUpperLimit << ")\n";
         return;
     }
     if (limit > iUpperLimit) {

@@ -81,6 +81,15 @@ void Board::PrintSelf()
     std::cout << "Board done\n";
 }
 
+char getCharForValue(int value)
+{
+    if (value < 0)
+        return ' ';
+    if (value < 10)
+        return (char)(value + 48);
+    return (char)(value - 10 + 65);
+}
+
 void Board::PrintBoard()
 {
     int maxRowGroups = 0;
@@ -102,7 +111,7 @@ void Board::PrintBoard()
             if (iColumns[j].NumberOfGroups() < i)
                 std::cout << " ";
             else
-                std::cout << iColumns[j].GroupSize(iColumns[j].NumberOfGroups() - i);
+                std::cout << getCharForValue(iColumns[j].GroupSize(iColumns[j].NumberOfGroups() - i));
         }
         std::cout << "\n";
     }
@@ -118,18 +127,18 @@ void Board::PrintBoard()
             if (iRows[i].NumberOfGroups() < j)
                 std::cout << " ";
             else
-                std::cout << iRows[i].GroupSize(iRows[i].NumberOfGroups() - j);
+                std::cout << getCharForValue(iRows[i].GroupSize(iRows[i].NumberOfGroups() - j));
         }
         iRows[i].Print();
     }
 }
 
-void Board::Process()
+void Board::Process(unsigned rounds)
 {
 //    bool anyProcessingLeft = true;
 //    while (anyProcessingLeft) {
 //        anyProcessingLeft = false;
-    for (int j = 0 ; j < 10; j++) {
+    for (unsigned j = 0 ; j < rounds; j++) {
         for (int i = 0; i < iWidth; i++)
             iColumns[i].Process();
 //            anyProcessingLeft |= iColumns[i].Process();
@@ -138,6 +147,8 @@ void Board::Process()
 //            anyProcessingLeft |= iRows[i].Process();
 
         PrintBoard();
+        std::cout << "\n\n";
+        PrintSelf();
         std::cout << "\n\n";
     }
 

@@ -40,7 +40,7 @@ void Field::Print()
 {
     switch (iState) {
     case State_Empty:
-        std::cout << "x";
+        std::cout << "-";
         break;
     case State_Full:
         std::cout << "#";

@@ -13,7 +13,7 @@ public:
     bool ProcessFile(std::string content);
     void PrintSelf();
     void PrintBoard();
-    void Process();
+    void Process(unsigned rounds);
     void DBG_ProcessOnce();
 private:
     void CreateFieldGroups(std::vector<std::string> &elems, std::vector<FieldLine> &line, unsigned lineSize);
