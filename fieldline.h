@@ -20,6 +20,7 @@ public:
     int NumberOfGroups() { return iGroups.size(); }
     int GroupSize(int index) { return (index >= 0 && index < (int)(iGroups.size())) ? iGroups[index].Size() : 0; }
 private:
+    void FillGapsBetweenGroups();
     void log(std::string info);
     void log(std::string info, int value);
     std::vector<int> GroupsContainingField(int index);

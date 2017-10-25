@@ -15,7 +15,7 @@ public:
     Field();
     void AddParent(FieldLine *parent);
     void SetState(FieldState newState);
-    FieldState GetState() {return iState; }
+    FieldState GetState() { return iState; }
     void Print();
 private:
     FieldState iState;

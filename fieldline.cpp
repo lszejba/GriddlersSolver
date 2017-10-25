@@ -100,13 +100,14 @@ bool FieldLine::Process()
     }
 
     // 2. Fill gaps between groups with empty fields - fieldLine level
-    for (int i = 0; i < iSize; i++) {
-        std::vector<int> fieldOwners = GroupsContainingField(i);
-        if (fieldOwners.size() == 0) {
-            iFields[i]->SetState(State_Empty);
-            log("Set field to EMPTY", i);
-        }
-    }
+    FillGapsBetweenGroups();
+//    for (int i = 0; i < iSize; i++) {
+//        std::vector<int> fieldOwners = GroupsContainingField(i);
+//        if (fieldOwners.size() == 0) {
+//            iFields[i]->SetState(State_Empty);
+//            log("Set field to EMPTY", i);
+//        }
+//    }
     // 3. Check existing groups of full fields:
     std::vector<int> fullFieldGroupIndex;
     std::vector<int> fullFieldGroupSize;
@@ -262,4 +263,17 @@ std::vector<int> FieldLine::GroupsContainingField(int index)
     }
 
     return result;
+}
+
+void FieldLine::FillGapsBetweenGroups()
+{
+    for (int i = 0; i < iSize; i++) {
+        if (iFields[i]->GetState != State_Unknown)
+            continue;
+        std::vector<int> fieldOwners = GroupsContainingField(i);
+        if (fieldOwners.size() == 0) {
+            iFields[i]->SetState(State_Empty);
+            log("Set field to EMPTY", i);
+        }
+    }
 }
