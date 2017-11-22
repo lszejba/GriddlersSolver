@@ -1,6 +1,22 @@
 #include "fieldline.h"
 #include <iostream>
 
+#ifdef LOG
+void FieldLine::log(std::string info)
+{
+    std::cout << "[" << iID << "] " << info << std::endl;
+}
+
+void FieldLine::log(std::string info, int value)
+{
+    std::cout << "[" << iID << "] " << info << "(value: " << value << ")" << std::endl;
+}
+#endif
+#ifndef LOG
+void FieldLine::log(std::string) {}
+void FieldLine::log(std::string, int) {}
+#endif
+
 FieldLine::FieldLine(int size, std::string type, int index) : iSize(size), iID(type + std::to_string(index)), isChanged(true)
 {
     iFields = std::vector<Field *>(size);
@@ -128,7 +144,7 @@ bool FieldLine::Process()
         }
     }
     // 3.1. Limit groups of full fields of length equal to those of longest fieldGroup
-    for (int i = 0; i < fullFieldGroupSize.size(); i++) {
+    for (unsigned i = 0; i < fullFieldGroupSize.size(); i++) {
         if (fullFieldGroupSize[i] == longestGroupSize) {
             if (fullFieldGroupIndex[i] - 1 > 0) {
                 iFields[fullFieldGroupIndex[i] - 1]->SetState(State_Empty);
@@ -206,7 +222,7 @@ bool FieldLine::Process()
 
     // 4. Modify limits of groups neighbouring with completed groups
     if (iGroups.size() > 1) {
-        for (int i = 0; i < iGroups.size(); i++) {
+        for (unsigned i = 0; i < iGroups.size(); i++) {
             if (iGroups[i].IsComplete()) {
                 if (i > 0) { // check previous group
                     if (iGroups[i - 1].UpperLimit() > (iGroups[i].LowerLimit() - 1)) {
@@ -244,20 +260,10 @@ void FieldLine::Print()
     std::cout << "|\n";
 }
 
-void FieldLine::log(std::string info)
-{
-//    std::cout << "[" << iID << "] " << info << std::endl;
-}
-
-void FieldLine::log(std::string info, int value)
-{
-//    std::cout << "[" << iID << "] " << info << "(value: " << value << ")" << std::endl;
-}
-
 std::vector<int> FieldLine::GroupsContainingField(int index)
 {
     std::vector<int> result;
-    for (int i = 0; i < iGroups.size(); i++) {
+    for (unsigned i = 0; i < iGroups.size(); i++) {
         if (iGroups[i].ContainsField(index))
             result.push_back(i);
     }
@@ -268,7 +274,7 @@ std::vector<int> FieldLine::GroupsContainingField(int index)
 void FieldLine::FillGapsBetweenGroups()
 {
     for (int i = 0; i < iSize; i++) {
-        if (iFields[i]->GetState != State_Unknown)
+        if (iFields[i]->GetState() != State_Unknown)
             continue;
         std::vector<int> fieldOwners = GroupsContainingField(i);
         if (fieldOwners.size() == 0) {

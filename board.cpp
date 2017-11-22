@@ -94,11 +94,11 @@ void Board::PrintBoard()
 {
     int maxRowGroups = 0;
     int maxColGroups = 0;
-    for (int i = 0; i < iWidth; i++) {
+    for (unsigned i = 0; i < iWidth; i++) {
         if (iColumns[i].NumberOfGroups() > maxColGroups)
             maxColGroups = iColumns[i].NumberOfGroups();
     }
-    for (int i = 0; i < iHeight; i++) {
+    for (unsigned i = 0; i < iHeight; i++) {
         if (iRows[i].NumberOfGroups() > maxRowGroups)
             maxRowGroups = iRows[i].NumberOfGroups();
     }
@@ -107,7 +107,7 @@ void Board::PrintBoard()
         for (int j = 0; j < maxRowGroups; j++)
             std::cout << " ";
         std::cout << "|";
-        for (int j = 0; j < iWidth; j++) {
+        for (unsigned j = 0; j < iWidth; j++) {
             if (iColumns[j].NumberOfGroups() < i)
                 std::cout << " ";
             else
@@ -118,11 +118,11 @@ void Board::PrintBoard()
     for (int i = 0; i < maxRowGroups; i++)
         std::cout << "-";
     std::cout << "+";
-    for (int i = 0; i < iWidth; i++)
+    for (unsigned i = 0; i < iWidth; i++)
         std::cout << "-";
     std::cout << "+" << std::endl;
 
-    for (int i = 0; i < iHeight; i++) {
+    for (unsigned i = 0; i < iHeight; i++) {
         for (int j = maxRowGroups; j > 0; j--) {
             if (iRows[i].NumberOfGroups() < j)
                 std::cout << " ";
@@ -139,10 +139,10 @@ void Board::Process(unsigned rounds)
 //    while (anyProcessingLeft) {
 //        anyProcessingLeft = false;
     for (unsigned j = 0 ; j < rounds; j++) {
-        for (int i = 0; i < iWidth; i++)
+        for (unsigned i = 0; i < iWidth; i++)
             iColumns[i].Process();
 //            anyProcessingLeft |= iColumns[i].Process();
-        for (int i = 0; i < iHeight; i++)
+        for (unsigned i = 0; i < iHeight; i++)
             iRows[i].Process();
 //            anyProcessingLeft |= iRows[i].Process();
 
@@ -158,14 +158,14 @@ void Board::DBG_ProcessOnce()
 {
     std::cout << "---\n\n";
 
-    for (int i = 0; i < iWidth; i++)
+    for (unsigned i = 0; i < iWidth; i++)
         iColumns[i].Process();
-    for (int i = 0; i < iHeight; i++)
+    for (unsigned i = 0; i < iHeight; i++)
         iRows[i].Process();
 
     PrintSelf();
 
-    for (int i = 0; i < iHeight; i++)
+    for (unsigned i = 0; i < iHeight; i++)
         iRows[i].Print();
     std::cout << "\n\n";
 }
