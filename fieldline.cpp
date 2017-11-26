@@ -63,12 +63,14 @@ bool FieldLine::Process()
                 // TODO: currently unsupported - group size is 2:
                 // group looks like this: |  X X  | - middle gap should be set to empty
                 if (i - (*it).LowerLimit() < (*it).Size()) { // move lower limit
+                    log("Moving lower limit", i + 1);
                     (*it).SetLowerLimit(i + 1);
-                    log("Move lower limit", i + 1);
+                    log("Moved lower limit", i + 1);
                 }
                 if ((*it).UpperLimit() - i < (*it).Size()) { // move upper limit
+                    log("Moving upper limit", i - 1);
                     (*it).SetUpperLimit(i - 1);
-                    log("Move upper limit", i - 1);
+                    log("Moved upper limit", i - 1);
                 }
                 break;
             case State_Full:
@@ -94,8 +96,9 @@ bool FieldLine::Process()
             // Recalculate fieldGroup limits
             int missingFields = (*it).Size() - (maxIndex - minIndex + 1);
             if (minIndex - missingFields >= (*it).LowerLimit()) {
+                log("Moving lower limit (after fill)", minIndex - missingFields);
                 (*it).SetLowerLimit(minIndex - missingFields);
-                log("Move lower limit (after fill)", minIndex - missingFields);
+                log("Moved lower limit (after fill)", minIndex - missingFields);
             }
             if (maxIndex + missingFields <= (*it).UpperLimit()) {
                 (*it).SetUpperLimit(maxIndex + missingFields);
@@ -160,7 +163,10 @@ bool FieldLine::Process()
         // Change limits if fieldGroup contains only part of group of full fields
         std::vector<int> firstFieldOwners = GroupsContainingField(fullFieldGroupIndex[i]);
         std::vector<int> lastFieldOwners = GroupsContainingField(fullFieldGroupIndex[i] + fullFieldGroupSize[i] - 1);
-        if (firstFieldOwners.size() != lastFieldOwners.size()) { // remove fieldGroups absent from any of above groups
+        if (firstFieldOwners.size() == 0 || lastFieldOwners.size() == 0) {
+            // do nothing
+        }
+        else if (firstFieldOwners.size() != lastFieldOwners.size()) { // remove fieldGroups absent from any of above groups
             // We assume that these groups won't differ very much (bigger group contains all of elements of smaller)
             // Check only limiting elements and change their limits if needed
             if (firstFieldOwners.size() > lastFieldOwners.size()) {
@@ -174,6 +180,7 @@ bool FieldLine::Process()
                 if (firstFieldOwners[firstFieldOwners.size() - 1] != lastFieldOwners[lastFieldOwners.size() - 1]) { // last one is odd one
                     int newLimit = fullFieldGroupIndex[i] + fullFieldGroupSize[i] - 1 + 2;
                     if (newLimit < iSize) {
+                        log("Setting lower limit (group too long)", newLimit);
                         iGroups[firstFieldOwners[firstFieldOwners.size() - 1]].SetLowerLimit(newLimit);
                         log("Set lower limit (group too long)", newLimit);
                     }
@@ -189,6 +196,7 @@ bool FieldLine::Process()
                 if (lastFieldOwners[lastFieldOwners.size() - 1] != firstFieldOwners[firstFieldOwners.size() - 1]) { // last one is odd one
                     int newLimit = fullFieldGroupIndex[i] + fullFieldGroupSize[i] - 1 + 2;
                     if (newLimit < iSize) {
+                        log("Setting lower limit (group too long [2]", newLimit);
                         iGroups[lastFieldOwners[firstFieldOwners.size() - 1]].SetLowerLimit(newLimit);
                         log("Set lower limit (group too long [2]", newLimit);
                     }
@@ -209,6 +217,7 @@ bool FieldLine::Process()
             if (iGroups[firstFieldOwners[firstFieldOwners.size() - 1]].Size() < fullFieldGroupSize[i]) {
                 int newLimit = fullFieldGroupIndex[i] + fullFieldGroupSize[i] - 1 + 2;
                 if (newLimit < iSize) {
+                    log("Setting lower limit (remove last group)", newLimit);
                     iGroups[firstFieldOwners[firstFieldOwners.size() - 1]].SetLowerLimit(newLimit);
                     log("Set lower limit (remove last group)", newLimit);
                 }
@@ -232,6 +241,7 @@ bool FieldLine::Process()
                 }
                 if (i + 1 < iGroups.size()) { // check next group
                     if (iGroups[i + 1].LowerLimit() < (iGroups[i].UpperLimit() + 1)) {
+                        log("Setting upper limit (neighbouring complete group", iGroups[i].UpperLimit() + 1);
                         iGroups[i + 1].SetLowerLimit(iGroups[i].UpperLimit() + 1);
                         log("Set upper limit (neighbouring complete group", iGroups[i].UpperLimit() + 1);
                     }
