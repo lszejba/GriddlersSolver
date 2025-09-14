@@ -1,0 +1,23 @@
+Griddlers Solver Design Document
+
+1. Goal of project
+Solving Griddler provided as input to application
+1.1 Sub goal 1
+Returning information that input has/hasn't deterministic solution
+1.2 Sub goal 2
+Providing list of steps leading to solution (so it can be processed by another application to show the whole process step-by-step)
+
+2. Input format
+TODO: provide list of processed formats
+
+3. Classes
+Board
+- width
+- height
+- rowGroupsSize
+- columnGroupsSize
+Field
+- rowNumber
+- columnNumber
+- state (EMPTY / FULL / UNKNOWN(default) )
+LogicalGroup
