@@ -14,10 +14,19 @@ TODO: provide list of processed formats
 Board
 - width
 - height
-- rowGroupsSize
-- columnGroupsSize
+- rowGroupsSizes (int[])
+- columnGroupsSizes (int[])
+- rowLogicalGroups (LogicalGroup[])
+- columnLogicalGroups (LogicalGroup[])
+
 Field
 - rowNumber
 - columnNumber
-- state (EMPTY / FULL / UNKNOWN(default) )
+- state (EMPTY / FULL / UNKNOWN(default) ) - this might be later expanded with secondary colors
+
 LogicalGroup
+- size
+- prevLogicalGroup
+- nextLogicalGroup
+
+

@@ -1,0 +1,2 @@
+#define "LogicalGroup.hpp"
+
