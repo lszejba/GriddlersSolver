@@ -10,7 +10,7 @@ public:
 
 private:
     int number;
-    vector<Field &> contents;
+    std::vector<Field *> contents;
 };
 
 #endif

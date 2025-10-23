@@ -12,7 +12,7 @@ public:
     void Unregister(LogicalGroup &);
 
 private:
-    std::set<LogicalGroup &> registeredGroups; // TODO: probably need to use std::reference_wrapper here, read more about it
+    std::set<LogicalGroup *> registeredGroups;
 };
 
 #endif

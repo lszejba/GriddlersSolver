@@ -1,2 +1,2 @@
-#define "LogicalGroup.hpp"
+#include "LogicalGroup.hpp"
 
