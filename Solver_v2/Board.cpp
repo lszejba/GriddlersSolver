@@ -1,12 +1,15 @@
-#include <Board.hpp>
+#include "Board.hpp"
 
-static Board Board::getInstance()
+Board& Board::getInstance()
 {
-    if (Board::instance == nullptr)
+    static Board instance;
+
+    return instance;
+    /*if (Board::instance == nullptr)
     {
         Board::instance = new Board();
     }
-    return Board::instance;
+    return Board::instance;*/
 }
 
 Board::Board()

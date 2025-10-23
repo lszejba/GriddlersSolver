@@ -4,14 +4,14 @@
 class Board
 {
 public:
-    static Board getInstance();
+    static Board& getInstance();
     void LoadNewBoard(/*params*/);
 
 private:
     Board();
     void Reset();
 
-    static Board instance = nullptr;
+    //static Board instance;
     int rows;
     int columns;
 };

@@ -22,11 +22,24 @@ Board
 Field
 - rowNumber
 - columnNumber
+- previous (Field)
+- next (Field)
 - state (EMPTY / FULL / UNKNOWN(default) ) - this might be later expanded with secondary colors
+
+PhysicalRow
+- type (ROW / COLUMN)
+- number
+- contents (Field[])
 
 LogicalGroup
 - size
-- prevLogicalGroup
-- nextLogicalGroup
+- previous (LogicalGroup)
+- next (LogicalGroup)
 
+MessageQueue
+- messages (Message[])
+- AddMessage(Message) - check messages if one with given recipient is present, don't add this one if true
 
+Message
+- sender (Field)
+- recipient (LogicalGroup)
