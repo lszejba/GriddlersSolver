@@ -47,7 +47,7 @@ void Board::LoadNewBoard(std::string path)
     std::getline(in, line);
 
     // Read row groups: expect one line per row (skip blank lines)
-    std::vector<std::vector<int>> rowGroups;
+    //std::vector<std::vector<int>> rowGroups;
     rowGroupsSizes.reserve(rows);
     for (int r = 0; r < rows; ++r)
     {
@@ -93,6 +93,9 @@ void Board::LoadNewBoard(std::string path)
         }
         columnGroupsSizes.push_back(std::move(groups));
     }
+
+    CreatePhysicalLayer();
+    InitializeLogicalLayer();
 }
 
 void Board::PrintBaseInfo()
@@ -118,6 +121,21 @@ void Board::PrintBaseInfo()
     }
 }
 
+void Board::PrintBoardContents()
+{
+    if (rows < 0)
+    {
+        std::cout << "<BOARD EMPTY>" << std::endl;
+    }
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < columns; j++)
+        {
+            fields[i * columns + j]->Print();
+        }
+        std::cout << std::endl;
+    }
+}
 
 // --- PRIVATE ---
 
@@ -147,4 +165,46 @@ void Board::Reset()
         }
         columnGroupsSizes.clear();
     }
+    fields.clear();
+}
+
+void Board::CreatePhysicalLayer()
+{
+    std::cout << "[CreatePhysicalLayer()] start" << std::endl;
+    if (rows <= 0 || columns <= 0)
+    {
+        return;
+    }
+
+    fields.reserve(rows * columns);
+    for (int x = 0; x < rows; x++)
+    {
+        for (int y = 0; y < columns; y++)
+        {
+            fields[y + x * columns] = std::make_shared<Field>(x, y);
+        }
+    }
+    physicalRows.reserve(rows);
+    for (int i = 0; i < rows; i++)
+    {
+        physicalRows[i] = std::make_shared<PhysicalRow>(i, columns);
+        for (int j = 0; j < columns; j++)
+        {
+            physicalRows[i]->SetField(j, fields[i * columns + j]);
+        }
+    }
+    physicalColumns.reserve(columns);
+    for (int j = 0; j < columns; j++)
+    {
+        physicalColumns[j] = std::make_shared<PhysicalRow>(j, rows);
+        for (int i = 0; i < rows; i++)
+        {
+            physicalColumns[j]->SetField(i, fields[i * columns + j]);
+        }
+    }
+    std::cout << "[CreatePhysicalLayer()] end" << std::endl;
+}
+
+void Board::InitializeLogicalLayer()
+{
 }
