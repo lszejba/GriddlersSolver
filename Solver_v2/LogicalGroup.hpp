@@ -4,7 +4,7 @@
 class LogicalGroup
 {
 public:
-
+    void Process();
 private:
 
 };
