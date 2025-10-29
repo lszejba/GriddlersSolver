@@ -187,20 +187,24 @@ void Board::CreatePhysicalLayer()
     physicalRows.reserve(rows);
     for (int i = 0; i < rows; i++)
     {
-        physicalRows[i] = std::make_shared<PhysicalRow>(i, columns);
+        std::cout << "... creating new PhysicalRow..." << std::endl;
+        physicalRows[i] = std::make_shared<PhysicalRow>(i, PhysicalRowType::Row, columns);
         for (int j = 0; j < columns; j++)
         {
             physicalRows[i]->SetField(j, fields[i * columns + j]);
         }
+        physicalRows[i]->CreateLogicalGroups(rowGroupsSizes[i]);
+        std::cout << "... done" << std::endl;
     }
     physicalColumns.reserve(columns);
     for (int j = 0; j < columns; j++)
     {
-        physicalColumns[j] = std::make_shared<PhysicalRow>(j, rows);
+        physicalColumns[j] = std::make_shared<PhysicalRow>(j, PhysicalRowType::Column, rows);
         for (int i = 0; i < rows; i++)
         {
             physicalColumns[j]->SetField(i, fields[i * columns + j]);
         }
+        physicalColumns[j]->CreateLogicalGroups(columnGroupsSizes[j]);
     }
     std::cout << "[CreatePhysicalLayer()] end" << std::endl;
 }
