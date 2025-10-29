@@ -6,15 +6,15 @@ Field::Field(int x, int y) : state(FieldState::Unknown), rowNumber(x), columnNum
 {
 }
 
-void Field::Register(LogicalGroup& group)
+/*void Field::Register(LogicalGroup& group)
 {
     registeredGroups.insert(&group);
-}
+}*/
 
-void Field::Unregister(LogicalGroup& group)
+/*void Field::Unregister(LogicalGroup& group)
 {
     registeredGroups.erase(&group);
-}
+}*/
 
 void Field::UpdateState(FieldState newState)
 {
@@ -28,10 +28,11 @@ void Field::UpdateState(FieldState newState)
     }
 
     state = newState;
-    for (auto logicalGroup : registeredGroups)
+    // TODO: send info to MessageQueue to run Process on all IReceivers registered to this Field
+    /*for (auto logicalGroup : registeredGroups)
     {
         logicalGroup->Process();
-    }
+    }*/
 }
 
 void Field::Print()
