@@ -12,32 +12,43 @@ TODO: provide list of processed formats
 
 3. Classes
 Board
-- width
-- height
-- rowGroupsSizes (int[])
-- columnGroupsSizes (int[])
-- rowLogicalGroups (LogicalGroup[])
-- columnLogicalGroups (LogicalGroup[])
++ rows
++ columns
++ rowGroupsSizes (int[])
++ columnGroupsSizes (int[])
+-- rowLogicalGroups (LogicalGroup[])
+-- columnLogicalGroups (LogicalGroup[])
 
 Field
-- rowNumber
-- columnNumber
-- state (EMPTY / FULL / UNKNOWN(default) ) - this might be later expanded with secondary colors
++ rowNumber
++ columnNumber
++ state (EMPTY / FULL / UNKNOWN(default) ) - this might be later expanded with secondary colors
+TODO:
+* remove LogicalGroup from class
+* create interfaces ISender, IReceiver
+* add inheritance from IReceiver
+* move register/unregister from Field to MessageQueue class
 
 PhysicalRow
-- type (ROW / COLUMN)
-- number
-- contents (Field[])
++ type (ROW / COLUMN)
++ number
++ contents (Field[])
+- logicalGroups (LogicalGroup[])
 
 LogicalGroup
-- size
-- previous (LogicalGroup)
-- next (LogicalGroup)
++ size
+- candidates (Field[])
+-- previous (LogicalGroup)
+-- next (LogicalGroup)
 
 MessageQueue
 - messages (Message[])
 - AddMessage(Message) - check messages if one with given recipient is present, don't add this one if true
 
 Message
-- sender (Field)
-- recipient (LogicalGroup)
++ sender (Field)
++ recipient (LogicalGroup)
+
+ISender
+
+IReceiver
