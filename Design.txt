@@ -46,9 +46,16 @@ MessageQueue
 - AddMessage(Message) - check messages if one with given recipient is present, don't add this one if true
 
 Message
+DESCRIPTION: class for inner communication between other classes. Sent by ISender to MessageQueue, which passes it to IReceiver and run certain method on it.
 + sender (Field)
 + recipient (LogicalGroup)
 
 ISender
+DESCRIPTION: Interface for classes to send information to IReceivers when state of class (or its contents) change and action is required on IReceiver side.
 
 IReceiver
+
+Event
+DESCRIPTION: Class for outside communication when certain conditions are met. Events are collected by EventsManager.
+
+EventsManager
