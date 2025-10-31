@@ -3,14 +3,9 @@
 
 #include <memory>
 #include <vector>
+#include "Enums.hpp"
 #include "Field.hpp"
 #include "LogicalGroup.hpp"
-
-enum PhysicalRowType
-{
-    Row,
-    Column
-};
 
 class PhysicalRow
 {

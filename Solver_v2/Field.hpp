@@ -2,14 +2,8 @@
 #define FIELD_HPP
 
 #include <set>
+#include "Enums.hpp"
 //#include "LogicalGroup.hpp"
-
-enum FieldState
-{
-    Unknown = -1,
-    Empty = 0,
-    Full = 1
-};
 
 class Field
 {
