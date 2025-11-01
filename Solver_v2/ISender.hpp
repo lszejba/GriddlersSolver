@@ -4,7 +4,8 @@
 class ISender
 {
 public:
-    virtual void Notify();
-}
+    virtual ~ISender() = default;
+    virtual void Notify() = 0;
+};
 
 #endif

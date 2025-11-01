@@ -13,7 +13,7 @@ public:
 
 private:
     MessageQueue();
-    std::queue<Message> messages;
+    std::queue<std::shared_ptr<Message>> messages;
 };
 
 #endif

@@ -1,17 +1,18 @@
 #ifndef MESSAGE
 #define MESSAGE
 
+#include <memory>
 #include "ISender.hpp"
 #include "IReceiver.hpp"
 
 class Message
 {
 public:
-    Message(ISender sender, IReceiver receiver);
+    Message(std::shared_ptr<ISender> sender, std::shared_ptr<IReceiver> receiver);
 
 private:
-    ISender sender;
-    IReceiver receiver;
+    std::shared_ptr<ISender> sender;
+    std::shared_ptr<IReceiver> receiver;
 };
 
 #endif

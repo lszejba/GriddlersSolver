@@ -4,8 +4,9 @@
 class IReceiver
 {
 public:
-    virtual void Register();
-    virtual void UnRegister();
+    virtual ~IReceiver() = default;
+    virtual void Register() = 0;
+    virtual void UnRegister() = 0;
 };
 
 #endif
