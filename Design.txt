@@ -16,18 +16,14 @@ Board
 + columns
 + rowGroupsSizes (int[])
 + columnGroupsSizes (int[])
--- rowLogicalGroups (LogicalGroup[])
--- columnLogicalGroups (LogicalGroup[])
++ physicalRows (PhysicalRow[])
++ physicalColumns (PhysicalRow[])
++ processingQueue (PhysicalRow[])
 
 Field
 + rowNumber
 + columnNumber
 + state (EMPTY / FULL / UNKNOWN(default) ) - this might be later expanded with secondary colors
-TODO:
-* remove LogicalGroup from class
-* create interfaces ISender, IReceiver
-* add inheritance from IReceiver
-* move register/unregister from Field to MessageQueue class
 
 PhysicalRow
 + type (ROW / COLUMN)
@@ -44,6 +40,7 @@ LogicalGroup
 MessageQueue
 - messages (Message[])
 - AddMessage(Message) - check messages if one with given recipient is present, don't add this one if true
+- GetReceivers(Field, PhysicalRow) - return vector of Receivers (LogicalGroups) from PhysicalRow registered on given Field - TODO: implement
 
 Message
 DESCRIPTION: class for inner communication between other classes. Sent by ISender to MessageQueue, which passes it to IReceiver and run certain method on it.
@@ -59,3 +56,29 @@ Event
 DESCRIPTION: Class for outside communication when certain conditions are met. Events are collected by EventsManager.
 
 EventsManager
+
+4. Workflow
++ create Board
++ load file
+-- validate file format and contents [create Event if failed]
+-- create physical layer (Fields and PhysicalRows)
+-- create logical layer (LogicalGroups)
+--- initialize LogicalGroups according to rest of LogicalGroups in PhysicalRow [create Event for each LogicalGroup]
+- first loop
+-- go through all PhysicalRows
+--- check if any Field in PhysicalRow has no of its LogicalGroups registered to it - if TRUE change status to EMPTY [generate Event]
+--- process all LogicalGroups
+**** if any EMPTY Field is present - update range for any bordering part that is too small to contain whole group
+**** check if intersection exists (when whole group starting from the first field and from the last share Fields)
+***** when it does - set every field to FULL [generate Event for each updated Field]
+**** check if multiple groups of FULL Fields exist in LogicalGroup
+***** if any group is longer than expected - validate if previous OR next LogicalGroup can contain it (if both, TBD)
+****** if only previous OR next LogicalGroup can be owner - update range accordingly (include additional field as potential EMPTY separator)
+***** if multiple groups are only registered to this LogicalGroup - validate if they can be connected  (resulting group should be shorter/equal to expected size)
+****** if TRUE - set all Fields in between to FULL [generate Events]
+****** if FALSE - something went wrong [generate error Event, stop processing]
+**** check if only one continuous group of FULL Fields exists - if size is equal to expected: add EMPTY separators if needed [generate Events], update range, mark LogicalGroup as FINISHED [generate Event]
+- consecutive loops
+-- repeat algorithm above for all PhysicalRows registered in Board via created Events
+- if Board is solved - generate SUCCESS Event
+- if Board is not solved - generate FAILURE Event
