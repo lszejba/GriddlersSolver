@@ -10,11 +10,15 @@ int main(int argc, char **argv) {
     board.PrintBaseInfo();
     board.PrintBoardContents();
 
-    std::cout << std::endl << std::endl << std::endl;
+    board.ProcessBoard();
+    std::cout << std::endl << std::endl;
+    board.PrintBoardContents();
+
+    /*std::cout << std::endl << std::endl << std::endl;
 
     board.LoadNewBoard("tests/5x3_2fullrows.test");
     board.PrintBaseInfo();
-    board.PrintBoardContents();
+    board.PrintBoardContents();*/
 
     return 0;
 }
