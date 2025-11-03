@@ -12,9 +12,18 @@ void PhysicalRow::SetField(int n, std::shared_ptr<Field> field)
 
 void PhysicalRow::CreateLogicalGroups(std::vector<int>& logicalGroups)
 {
+    if (logicalGroups.size() < 1 || (logicalGroups.size() == 1 && logicalGroups[0] == 0))
+    {
+        groups.clear();
+    }
     groups.reserve(logicalGroups.size());
     for (unsigned int i = 0; i < logicalGroups.size(); i++)
     {
         groups[i] = std::make_shared<LogicalGroup>(logicalGroups[i]);
     }
+}
+
+void PhysicalRow::Process()
+{
+
 }
