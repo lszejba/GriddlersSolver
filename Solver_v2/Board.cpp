@@ -87,6 +87,7 @@ void Board::LoadNewBoard(std::string path)
         columnGroupsSizes.push_back(std::move(groups));
     }
 
+    // TODO: add board validation here
     CreatePhysicalLayer();
     InitializeLogicalLayer();
 }
@@ -128,6 +129,17 @@ void Board::PrintBoardContents()
         }
         std::cout << std::endl;
     }
+}
+
+bool Board::ProcessBoard()
+{
+    while (processingQueue.size() > 0)
+    {
+        std::shared_ptr<PhysicalRow> currentRow = processingQueue.front();
+        currentRow->Process();
+        processingQueue.pop();
+    }
+    return false;
 }
 
 // --- PRIVATE ---
