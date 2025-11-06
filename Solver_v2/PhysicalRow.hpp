@@ -6,8 +6,9 @@
 #include "Enums.hpp"
 #include "Field.hpp"
 #include "LogicalGroup.hpp"
+#include "IReceiver.hpp"
 
-class PhysicalRow
+class PhysicalRow : public IReceiver
 {
 public:
     PhysicalRow(int n, PhysicalRowType type, int size);

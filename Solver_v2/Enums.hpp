@@ -14,4 +14,11 @@ enum PhysicalRowType
     Column
 };
 
+enum MessageType
+{
+    Register,
+    Unregister,
+    SenderUpdated
+};
+
 #endif

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <set>
 #include "Field.hpp"
+#include "MessageQueue.hpp"
 
 Field::Field(int x, int y) : state(FieldState::Unknown), rowNumber(x), columnNumber(y)
 {
@@ -53,3 +54,10 @@ void Field::Print()
             break;
     }
 }
+
+void Field::Notify()
+{
+    MessageQueue mQueue = MessageQueue::GetInstance();
+    mQueue.ProcessNotify(std::shared_ptr<ISender>(this), MessageType::SenderUpdated);
+}
+

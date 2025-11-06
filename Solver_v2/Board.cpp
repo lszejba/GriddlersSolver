@@ -3,6 +3,8 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include "Message.hpp"
+#include "MessageQueue.hpp"
 
 Board& Board::getInstance()
 {
@@ -175,6 +177,8 @@ void Board::Reset()
 
 void Board::CreatePhysicalLayer()
 {
+    MessageQueue mQueue = MessageQueue::GetInstance();
+
     if (rows <= 0 || columns <= 0)
     {
         return;
@@ -195,6 +199,7 @@ void Board::CreatePhysicalLayer()
         for (int j = 0; j < columns; j++)
         {
             physicalRows[i]->SetField(j, fields[i * columns + j]);
+            mQueue.AddMessage(std::make_shared<Message>(fields[i * columns + j], physicalRows[i], MessageType::Register));
         }
         physicalRows[i]->CreateLogicalGroups(rowGroupsSizes[i]);
     }
@@ -205,11 +210,13 @@ void Board::CreatePhysicalLayer()
         for (int i = 0; i < rows; i++)
         {
             physicalColumns[j]->SetField(i, fields[i * columns + j]);
+            mQueue.AddMessage(std::make_shared<Message>(fields[i * columns + j], physicalColumns[j], MessageType::Register));
         }
         physicalColumns[j]->CreateLogicalGroups(columnGroupsSizes[j]);
     }
 }
 
+// TODO: not sure if this will be needed since there is PhysicalRow::CreateLogicalGroups()
 void Board::InitializeLogicalLayer()
 {
 }
