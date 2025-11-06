@@ -41,6 +41,7 @@ MessageQueue
 - messages (Message[])
 - AddMessage(Message) - check messages if one with given recipient is present, don't add this one if true
 - GetReceivers(Field, PhysicalRow) - return vector of Receivers (LogicalGroups) from PhysicalRow registered on given Field - TODO: implement
+TODO: inside AddMessage process Register/Unregister (should be run during initialization)
 
 Message
 DESCRIPTION: class for inner communication between other classes. Sent by ISender to MessageQueue, which passes it to IReceiver and run certain method on it.
