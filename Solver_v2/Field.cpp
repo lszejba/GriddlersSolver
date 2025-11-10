@@ -1,5 +1,6 @@
 #include <iostream>
 #include <set>
+#include <sstream>
 #include "Field.hpp"
 #include "MessageQueue.hpp"
 
@@ -59,5 +60,12 @@ void Field::Notify()
 {
     MessageQueue mQueue = MessageQueue::GetInstance();
     mQueue.ProcessNotify(std::shared_ptr<ISender>(this), MessageType::SenderUpdated);
+}
+
+std::string Field::SenderName()
+{
+    std::ostringstream oss;
+    oss << "Field [" << this->rowNumber << "," << this->columnNumber << "]";
+    return oss.str();
 }
 

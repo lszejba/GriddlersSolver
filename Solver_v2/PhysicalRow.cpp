@@ -1,3 +1,4 @@
+#include <sstream>
 #include "PhysicalRow.hpp"
 
 PhysicalRow::PhysicalRow(int n, PhysicalRowType type, int size) : number(n), type(type)
@@ -26,4 +27,11 @@ void PhysicalRow::CreateLogicalGroups(std::vector<int>& logicalGroups)
 void PhysicalRow::Process()
 {
 
+}
+
+std::string PhysicalRow::ReceiverName()
+{
+    std::ostringstream oss;
+    oss << "PhysicalRow (" << ((type == PhysicalRowType::Row) ? "Row" : "Column") << ") [" << this->number << "]";
+    return oss.str();
 }

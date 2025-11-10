@@ -12,6 +12,7 @@ public:
     void UpdateState(FieldState newState);
     void Print();
     void Notify();
+    std::string SenderName();
 
 private:
     FieldState state;

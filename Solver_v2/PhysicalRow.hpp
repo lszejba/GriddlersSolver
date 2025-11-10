@@ -16,6 +16,7 @@ public:
     void SetField(int n, std::shared_ptr<Field> field);
     void CreateLogicalGroups(std::vector<int> &logicalGroups);
     void Process();
+    std::string ReceiverName();
 private:
     int number;
     PhysicalRowType type;

@@ -1,3 +1,5 @@
+#include <algorithm>
+#include <iostream>
 #include "MessageQueue.hpp"
 
 MessageQueue& MessageQueue::GetInstance()
@@ -8,7 +10,31 @@ MessageQueue& MessageQueue::GetInstance()
 
 void MessageQueue::AddMessage(std::shared_ptr<Message> message)
 {
-    messages.push(message);
+    std::shared_ptr<ISender> sender = message->GetSender();
+    std::shared_ptr<IReceiver> receiver = message->GetReceiver();
+    switch (message->GetType())
+    {
+        case MessageType::Register:
+            if (registered.count(sender) == 0)
+            {
+                registered[sender] = std::vector<std::shared_ptr<IReceiver>>();
+            }
+            registered[sender].push_back(receiver);
+            std::cout << "[Register] " << receiver->ReceiverName() << " registered to " << sender->SenderName() << std::endl;
+            break;
+        case MessageType::Unregister:
+            if (registered.count(sender) == 0)
+            {
+                return;
+            }
+            registered[sender].erase(std::remove(registered[sender].begin(), registered[sender].end(), receiver), registered[sender].end());
+            std::cout << "[Unregister] " << receiver->ReceiverName() << " unregistered from " << sender->SenderName() << std::endl;
+            break;
+        case MessageType::SenderUpdated:
+        default:
+            messages.push(message);
+            break;
+    }
 }
 
 void MessageQueue::ProcessNotify(std::shared_ptr<ISender> sender, MessageType type)
