@@ -21,7 +21,6 @@ private:
     Board();
     void Reset();
     void CreatePhysicalLayer();
-    void InitializeLogicalLayer();
 
     int rows;
     int columns;

@@ -198,7 +198,7 @@ void Board::CreatePhysicalLayer()
         physicalRows[i] = std::make_shared<PhysicalRow>(i, PhysicalRowType::Row, columns);
         for (int j = 0; j < columns; j++)
         {
-            physicalRows[i]->SetField(j, fields[i * columns + j]);
+            physicalRows[i]->SetField(fields[i * columns + j]);
             mQueue.AddMessage(std::make_shared<Message>(fields[i * columns + j], physicalRows[i], MessageType::Register));
         }
         physicalRows[i]->CreateLogicalGroups(rowGroupsSizes[i]);
@@ -209,14 +209,9 @@ void Board::CreatePhysicalLayer()
         physicalColumns[j] = std::make_shared<PhysicalRow>(j, PhysicalRowType::Column, rows);
         for (int i = 0; i < rows; i++)
         {
-            physicalColumns[j]->SetField(i, fields[i * columns + j]);
+            physicalColumns[j]->SetField(fields[i * columns + j]);
             mQueue.AddMessage(std::make_shared<Message>(fields[i * columns + j], physicalColumns[j], MessageType::Register));
         }
         physicalColumns[j]->CreateLogicalGroups(columnGroupsSizes[j]);
     }
-}
-
-// TODO: not sure if this will be needed since there is PhysicalRow::CreateLogicalGroups()
-void Board::InitializeLogicalLayer()
-{
 }

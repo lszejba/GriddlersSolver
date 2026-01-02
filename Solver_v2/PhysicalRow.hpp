@@ -13,10 +13,10 @@ class PhysicalRow : public IReceiver
 public:
     PhysicalRow(int n, PhysicalRowType type, int size);
 
-    void SetField(int n, std::shared_ptr<Field> field);
+    void SetField(std::shared_ptr<Field> field);
     void CreateLogicalGroups(std::vector<int> &logicalGroups);
-    void Process();
-    std::string ReceiverName();
+    void Process() override;
+    std::string ReceiverName() override;
 private:
     int number;
     PhysicalRowType type;

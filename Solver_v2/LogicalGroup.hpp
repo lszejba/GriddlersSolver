@@ -4,13 +4,18 @@
 #include <memory>
 #include <vector>
 #include "Field.hpp"
+#include "IReceiver.hpp"
 
-class LogicalGroup
+// TODO: Check if doesn't have to inherit from ISender as well (or only from it)
+class LogicalGroup : public IReceiver
 {
 public:
-    LogicalGroup(int size);
-    void Process();
+    LogicalGroup(int index, int size);
+    void AddCandidate(std::shared_ptr<Field> candidate);
+    void Process() override;
+    std::string ReceiverName() override;
 private:
+    int index;
     int size;
     std::vector<std::shared_ptr<Field>> candidates;
     bool finished;
