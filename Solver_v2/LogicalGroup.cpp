@@ -1,3 +1,4 @@
+#include <iostream>
 #include <sstream>
 #include "LogicalGroup.hpp"
 
@@ -20,5 +21,6 @@ std::string LogicalGroup::ReceiverName()
 
 void LogicalGroup::Process()
 {
+    std::cout << "[PROCESS] <<" << ReceiverName() << ">>" << std::endl;
     // TODO: implement
 }
