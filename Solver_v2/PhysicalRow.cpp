@@ -16,7 +16,7 @@ void PhysicalRow::SetField(std::shared_ptr<Field> field)
 
 void PhysicalRow::CreateLogicalGroups(std::vector<int>& logicalGroups)
 {
-    MessageQueue mQueue = MessageQueue::GetInstance();
+    MessageQueue& mQueue = MessageQueue::GetInstance();
 
     if (logicalGroups.size() < 1 || (logicalGroups.size() == 1 && logicalGroups[0] == 0))
     {
@@ -61,7 +61,8 @@ void PhysicalRow::CreateLogicalGroups(std::vector<int>& logicalGroups)
 
 void PhysicalRow::Process()
 {
-
+    std::cout << "[PROCESS] <<" << ReceiverName() << ">>" << std::endl;
+    // TODO: Implement
 }
 
 std::string PhysicalRow::ReceiverName()

@@ -58,7 +58,7 @@ void Field::Print()
 
 void Field::Notify()
 {
-    MessageQueue mQueue = MessageQueue::GetInstance();
+    MessageQueue& mQueue = MessageQueue::GetInstance();
     mQueue.ProcessNotify(std::shared_ptr<ISender>(this), MessageType::SenderUpdated);
 }
 
