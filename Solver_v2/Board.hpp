@@ -21,6 +21,7 @@ private:
     Board();
     void Reset();
     void CreatePhysicalLayer();
+    void ValidateBoard();
 
     int rows;
     int columns;
@@ -29,7 +30,6 @@ private:
     std::vector<std::shared_ptr<Field>> fields;
     std::vector<std::shared_ptr<PhysicalRow>> physicalRows;
     std::vector<std::shared_ptr<PhysicalRow>> physicalColumns;
-    std::queue<std::shared_ptr<PhysicalRow>> processingQueue;
 };
 
 #endif

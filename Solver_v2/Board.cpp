@@ -91,7 +91,6 @@ void Board::LoadNewBoard(std::string path)
 
     // TODO: add board validation here
     CreatePhysicalLayer();
-    InitializeLogicalLayer();
 }
 
 void Board::PrintBaseInfo()
@@ -135,11 +134,11 @@ void Board::PrintBoardContents()
 
 bool Board::ProcessBoard()
 {
-    while (processingQueue.size() > 0)
+    MessageQueue& mQueue = MessageQueue::GetInstance();
+    std::shared_ptr<Message> msg;
+    while ((msg = mQueue.GetNextMessage()) != nullptr)
     {
-        std::shared_ptr<PhysicalRow> currentRow = processingQueue.front();
-        currentRow->Process();
-        processingQueue.pop();
+        msg->GetReceiver()->Process();
     }
     return false;
 }
@@ -177,7 +176,7 @@ void Board::Reset()
 
 void Board::CreatePhysicalLayer()
 {
-    MessageQueue mQueue = MessageQueue::GetInstance();
+    MessageQueue& mQueue = MessageQueue::GetInstance();
 
     if (rows <= 0 || columns <= 0)
     {
@@ -215,3 +214,9 @@ void Board::CreatePhysicalLayer()
         physicalColumns[j]->CreateLogicalGroups(columnGroupsSizes[j]);
     }
 }
+
+void Board::ValidateBoard()
+{
+    // TODO: Implement
+}
+
