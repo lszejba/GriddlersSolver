@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <iostream>
+#include "IReceiver.hpp"
 #include "MessageQueue.hpp"
 
 MessageQueue& MessageQueue::GetInstance()
@@ -32,8 +33,21 @@ void MessageQueue::AddMessage(std::shared_ptr<Message> message)
             break;
         case MessageType::SenderUpdated:
         default:
-            messages.push(message);
             break;
+    }
+    // One message at a time per IReceiver
+    bool rcvFound = false;
+    for (auto& msg : messages)
+    {
+        if (msg->GetReceiver().get() == receiver.get())
+        {
+            rcvFound = true;
+            break;
+        }
+    }
+    if (!rcvFound)
+    {
+        messages.push_back(message);
     }
 }
 
@@ -57,6 +71,19 @@ std::vector<std::shared_ptr<IReceiver>>* MessageQueue::GetReceiversForSender(std
     }
     return &(registered[sender]);
 }
+
+std::shared_ptr<Message> MessageQueue::GetNextMessage()
+{
+    if (messages.empty())
+    {
+        return nullptr;
+    }
+    std::shared_ptr<Message> result = messages.front();
+    messages.pop_front();
+
+    return result;
+}
+
 
 // --- PRIVATE ---
 

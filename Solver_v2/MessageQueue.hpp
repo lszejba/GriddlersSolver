@@ -13,10 +13,13 @@ public:
     void AddMessage(std::shared_ptr<Message> message);
     void ProcessNotify(std::shared_ptr<ISender>, MessageType type);
     std::vector<std::shared_ptr<IReceiver>>* GetReceiversForSender(std::shared_ptr<ISender> sender);
+    std::shared_ptr<Message> GetNextMessage();
 
 private:
     MessageQueue();
-    std::queue<std::shared_ptr<Message>> messages;
+    MessageQueue(const MessageQueue&) = delete;
+    MessageQueue& operator=(const MessageQueue&) = delete;
+    std::deque<std::shared_ptr<Message>> messages;
     std::map<std::shared_ptr<ISender>, std::vector<std::shared_ptr<IReceiver>> > registered;
 };
 
