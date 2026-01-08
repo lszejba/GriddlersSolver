@@ -59,14 +59,16 @@ EventsManager
 4. Workflow
 + create Board
 + load file
--- validate file format and contents [create Event if failed]
+-- validate file format and contents
+:: - [create Event if failed]
 ++ create physical layer (Fields and PhysicalRows)
 ++ create logical layer (LogicalGroups)
 +++ initialize LogicalGroups according to rest of LogicalGroups in PhysicalRow
-... - [create Event for each LogicalGroup]
+::: - [create Event for each LogicalGroup]
 - first loop
 -- go through all PhysicalRows
---- check if any Field in PhysicalRow has no of its LogicalGroups registered to it - if TRUE change status to EMPTY [generate Event]
+--- check if any Field in PhysicalRow has no of its LogicalGroups registered to it - if TRUE change status to EMPTY
+::: - [generate Event]
 --- process all LogicalGroups
 **** if any EMPTY Field is present - update range for any bordering part that is too small to contain whole group
 **** check if intersection exists (when whole group starting from the first field and from the last share Fields)
