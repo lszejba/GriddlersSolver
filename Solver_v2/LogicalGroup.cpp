@@ -2,7 +2,8 @@
 #include <sstream>
 #include "LogicalGroup.hpp"
 
-LogicalGroup::LogicalGroup(int index, int size) : index(index), size(size), finished(false)
+LogicalGroup::LogicalGroup(int index, int size, std::string parentName)
+    : index(index), size(size), parentName(parentName), finished(false)
 {
 }
 
@@ -14,7 +15,7 @@ void LogicalGroup::AddCandidate(std::shared_ptr<Field> candidate)
 std::string LogicalGroup::ReceiverName()
 {
     std::ostringstream oss;
-    oss << "LogicalGroup [" << this->index << "]";
+    oss << "[Logic] " << parentName << " [[" << this->index << "]] (size: " << size << ")";
     return oss.str();
 }
 

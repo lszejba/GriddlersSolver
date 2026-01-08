@@ -13,6 +13,7 @@ void MessageQueue::AddMessage(std::shared_ptr<Message> message)
 {
     std::shared_ptr<ISender> sender = message->GetSender();
     std::shared_ptr<IReceiver> receiver = message->GetReceiver();
+    std::cout << "[AddMessage] START for sender: " << sender->SenderName() << " and receiver: " << receiver->ReceiverName() << std::endl;
     switch (message->GetType())
     {
         case MessageType::Register:
@@ -48,7 +49,9 @@ void MessageQueue::AddMessage(std::shared_ptr<Message> message)
     if (!rcvFound)
     {
         messages.push_back(message);
+        std::cout << "... new message added to queue" << std::endl;
     }
+    std::cout << "[AddMessage] DONE (current count: " << messages.size() << ")" << std::endl;
 }
 
 void MessageQueue::ProcessNotify(std::shared_ptr<ISender> sender, MessageType type)
@@ -63,13 +66,14 @@ void MessageQueue::ProcessNotify(std::shared_ptr<ISender> sender, MessageType ty
     }
 }
 
-std::vector<std::shared_ptr<IReceiver>>* MessageQueue::GetReceiversForSender(std::shared_ptr<ISender> sender)
+std::vector<std::shared_ptr<IReceiver>> MessageQueue::GetReceiversForSender(std::shared_ptr<ISender> sender)
 {
     if (registered.count(sender) == 0)
     {
-        return nullptr;
+        return std::vector<std::shared_ptr<IReceiver>>();
     }
-    return &(registered[sender]);
+
+    return std::vector<std::shared_ptr<IReceiver>>(registered[sender]);
 }
 
 std::shared_ptr<Message> MessageQueue::GetNextMessage()

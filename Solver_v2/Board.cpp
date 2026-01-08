@@ -138,7 +138,9 @@ bool Board::ProcessBoard()
     std::shared_ptr<Message> msg;
     while ((msg = mQueue.GetNextMessage()) != nullptr)
     {
+        std::cout << "{ProcessBoard} processing another message" << std::endl;
         msg->GetReceiver()->Process();
+        std::cout << "{ProcessBoard} ... done" << std::endl;
     }
     return false;
 }

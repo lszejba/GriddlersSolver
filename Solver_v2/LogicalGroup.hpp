@@ -10,13 +10,14 @@
 class LogicalGroup : public IReceiver
 {
 public:
-    LogicalGroup(int index, int size);
+    LogicalGroup(int index, int size, std::string parentName);
     void AddCandidate(std::shared_ptr<Field> candidate);
     void Process() override;
     std::string ReceiverName() override;
 private:
     int index;
     int size;
+    std::string parentName;
     std::vector<std::shared_ptr<Field>> candidates;
     bool finished;
 };

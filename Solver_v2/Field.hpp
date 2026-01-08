@@ -13,6 +13,7 @@ public:
     void Print();
     void Notify();
     std::string SenderName();
+    FieldState GetState();
 
 private:
     FieldState state;

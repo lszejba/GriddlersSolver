@@ -20,6 +20,7 @@ Field::Field(int x, int y) : state(FieldState::Unknown), rowNumber(x), columnNum
 
 void Field::UpdateState(FieldState newState)
 {
+    std::cout << "[Field.UPDATESTATE] start" << std::endl;
     if (state != FieldState::Unknown)
     {
         return; // once set, state can't be modified'
@@ -30,11 +31,15 @@ void Field::UpdateState(FieldState newState)
     }
 
     state = newState;
-    // TODO: send info to MessageQueue to run Process on all IReceivers registered to this Field
-    /*for (auto logicalGroup : registeredGroups)
+    MessageQueue& mQueue = MessageQueue::GetInstance();
+
+    std::shared_ptr<ISender> thisPtr = std::shared_ptr<ISender>(this);
+    std::vector<std::shared_ptr<IReceiver>> receivers = mQueue.GetReceiversForSender(thisPtr);
+    for (auto rcvPtr : receivers)
     {
-        logicalGroup->Process();
-    }*/
+        mQueue.AddMessage(std::make_shared<Message>(thisPtr, rcvPtr, newState == FieldState::Empty ? MessageType::Unregister : MessageType::SenderUpdated));
+    }
+    std::cout << "[Field.UPDATESTATE] done" << std::endl;
 }
 
 void Field::Print()
@@ -67,5 +72,11 @@ std::string Field::SenderName()
     std::ostringstream oss;
     oss << "Field [" << this->rowNumber << "," << this->columnNumber << "]";
     return oss.str();
+}
+
+
+FieldState Field::GetState()
+{
+    return state;
 }
 
