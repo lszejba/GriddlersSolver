@@ -2,10 +2,11 @@
 #define FIELD_HPP
 
 #include <set>
+#include <memory>
 #include "Enums.hpp"
 #include "ISender.hpp"
 
-class Field : public ISender
+class Field : public ISender, public std::enable_shared_from_this<Field>
 {
 public:
     Field(int x, int y);

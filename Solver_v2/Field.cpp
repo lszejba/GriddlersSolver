@@ -8,16 +8,6 @@ Field::Field(int x, int y) : state(FieldState::Unknown), rowNumber(x), columnNum
 {
 }
 
-/*void Field::Register(LogicalGroup& group)
-{
-    registeredGroups.insert(&group);
-}*/
-
-/*void Field::Unregister(LogicalGroup& group)
-{
-    registeredGroups.erase(&group);
-}*/
-
 void Field::UpdateState(FieldState newState)
 {
     std::cout << "[Field.UPDATESTATE] start" << std::endl;
@@ -33,7 +23,7 @@ void Field::UpdateState(FieldState newState)
     state = newState;
     MessageQueue& mQueue = MessageQueue::GetInstance();
 
-    std::shared_ptr<ISender> thisPtr = std::shared_ptr<ISender>(this);
+    std::shared_ptr<ISender> thisPtr = shared_from_this();
     std::vector<std::shared_ptr<IReceiver>> receivers = mQueue.GetReceiversForSender(thisPtr);
     for (auto rcvPtr : receivers)
     {
@@ -64,7 +54,7 @@ void Field::Print()
 void Field::Notify()
 {
     MessageQueue& mQueue = MessageQueue::GetInstance();
-    mQueue.ProcessNotify(std::shared_ptr<ISender>(this), MessageType::SenderUpdated);
+    mQueue.ProcessNotify(shared_from_this(), MessageType::SenderUpdated);
 }
 
 std::string Field::SenderName()
