@@ -7,7 +7,7 @@
 #include "IReceiver.hpp"
 
 // TODO: Check if doesn't have to inherit from ISender as well (or only from it)
-class LogicalGroup : public IReceiver
+class LogicalGroup : public IReceiver, public std::enable_shared_from_this<LogicalGroup>
 {
 public:
     LogicalGroup(int index, int size, std::string parentName);
