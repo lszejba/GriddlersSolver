@@ -26,12 +26,12 @@ void PhysicalRow::CreateLogicalGroups(std::vector<int>& logicalGroups)
         return;
     }
     groups.reserve(logicalGroups.size());
-    for (unsigned int i = 0; i < logicalGroups.size(); i++)
+    for (uint i = 0; i < logicalGroups.size(); i++)
     {
         groups.push_back(std::make_shared<LogicalGroup>(i, logicalGroups[i], name));
     }
 
-    for (unsigned int i = 0; i < groups.size(); i++)
+    for (uint i = 0; i < groups.size(); i++)
     {
         int startIdx = 0;//-1;
         int endIdx = contents.size() - 1;
@@ -39,7 +39,7 @@ void PhysicalRow::CreateLogicalGroups(std::vector<int>& logicalGroups)
         if (i != 0)
         {
             startIdx += i;
-            for (unsigned int j = 0; j < i; j++)
+            for (uint j = 0; j < i; j++)
             {
                 startIdx += logicalGroups[j];
             }
@@ -48,7 +48,7 @@ void PhysicalRow::CreateLogicalGroups(std::vector<int>& logicalGroups)
         if (i != groups.size() - 1)
         {
             endIdx -= /*contents.size() - 1 - */ (logicalGroups.size() - 1 - i);
-            for (unsigned int j = logicalGroups.size() - 1; j > i; j--)
+            for (uint j = logicalGroups.size() - 1; j > i; j--)
             {
                 endIdx -= logicalGroups[j];
             }
